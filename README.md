@@ -25,7 +25,7 @@ We use:
 - bamCoverage from deeptools package (version 3.2.1) to obtain bigWig files;
 - bamtobed from bedtools package (version 2.26.0) to obtain bed files from alignment.
 
-All the commands have standart settings.
+All the commands have standard settings.
 
 ### Project scripts
 

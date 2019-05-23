@@ -7,7 +7,6 @@ import numpy as np
 alg_s = AlgorithmsStats()
 histones = ['h3k4me1', 'h3k4me3', 'h3k27ac', 'h3k27me3', 'h3k36me3']
 fdrs = ['FDR 1E-6', 'FDR 0.05']
-fdr_lines = ['--', '-']
 algorithms = ['macs2', 'sicer', 'span']
 alg_colors = ['b', 'r', 'g']
 
@@ -53,17 +52,19 @@ def plot_true_peaks_comparison():
     # draw plot of changing percentage of true peaks in algorithms output
     plt.figure(figsize=(17, 12))
     i = 1
-    subplot_grid = (len(histones) // 3 + 1) * 100 + 30
+    subplot_grid = 230
     for h in histones:
         plt.subplot(subplot_grid + i)
         i += 1
-        if i == len(histones) % 3:
+        if i == 3:
             i += 1
             
         for alg, c in zip(algorithms, alg_colors):
-            for fdr, linestyle in zip(fdrs, fdr_lines):
-                plt.plot([i * 10 for i in range(10)], alg_s.pc_stability_data[fdrs[0]][alg][h],
+            for fdr, linestyle in zip(fdrs, ['--', '-']):
+                plt.plot([i * 10 for i in range(10)], alg_s.pc_stability_data[fdr][alg][h],
                         linestyle=linestyle, c=c)
+            if alg == algorithms[0]:
+                plt.legend(fdrs)
        
         plt.title(f'{h}', fontsize=20)
         plt.ylabel('percentage of true peaks', fontsize=15)
@@ -74,8 +75,8 @@ def plot_true_peaks_comparison():
 def plot_peak_set_comparison(fdr):
     # compare the set of peaks from different algorithms
     plt.figure(figsize=(20, 12))
-    n = (3 - (len(histones) % 3)) % 3  + 1
-    subplot_grid = (len(histones) // 3 + 1) * 100 + 30
+    n = 2
+    subplot_grid = 230
     for h in histones:
         plt.subplot(subplot_grid + n)
         n += 1
@@ -102,12 +103,8 @@ def plot_peak_set_comparison(fdr):
     
 
 if __name__ == "__main__":
+    plot_true_peaks_comparison()
     ind = [i for i in range(7)]
     for fdr, path_dict in zip(fdrs, [fdr_05_path, fdr_e6_path]):
         plot_peaks_dynamics(path_dict, ind, fdr)
         plot_peak_set_comparison(fdr)
-        
-    plot_true_peaks_comparison()
-        
-    
-        

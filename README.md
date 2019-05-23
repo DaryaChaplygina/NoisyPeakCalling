@@ -59,6 +59,7 @@ The following plots shows that increasing level of noise leads to decreasing in 
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/len_peaks_fdr_FDR%200.05.png?raw=true)
 
 Visualization of true peaks (i.e. peaks, which algorithm could find in file with 0% of noise) percentage in peakcaller output shows that __SPAN is the most stable to noisy data__ and __lower FDR level leads to lower stability__.
+
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/pk_colors.png?raw=true)
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/true_peaks_dynamics.png?raw=true)
 

@@ -4,7 +4,7 @@
 
 ChIP-sequencing is a method used to analyze protein interactions with DNA. The reads obtained from sequencing are mostly aligned on a regions where a protein interacts with DNA. The goal of __peak calling__ algorithm is to identify such enriched areas (__peaks__) in a genome.
 
-According to Jung2014[$$\small{^{[1]}}$$](#jung), derived set of peaks could vary depending on sequencing depth and specific algorithm. In the paper only sequencing depth was considered; here we analyze an impact of noise in ChIP-seq data on peak calling algorithms performance.   
+According to Jung2014[[1]](#jung), derived set of peaks could vary depending on sequencing depth and specific algorithm. In the paper only sequencing depth was considered; here we analyze an impact of noise in ChIP-seq data on peak calling algorithms performance.   
 
 ## Goals and objectives
 
@@ -17,7 +17,7 @@ The aims of the project:
 
 ### Data
 
-For experiment we choose five H3 histone modifications: [__H3K4me1__](https://www.encodeproject.org/files/ENCFF076WOE/), [__H3K4me3__](https://www.encodeproject.org/files/ENCFF001FYS/), [__H3K27ac__](https://www.encodeproject.org/files/ENCFF000CEN/), [__H3K27me3__](https://www.encodeproject.org/files/ENCFF001FYR/), [__H3K36me3__](https://www.encodeproject.org/files/ENCFF000CFB/), control files [ENCFF825XKT](https://www.encodeproject.org/files/ENCFF825XKT/) (for H3K4me1), [ENCFF001HUV](https://www.encodeproject.org/files/ENCFF001HUV/) (for H3K4me3 and H3K27me3), [ENCFF692GVG](https://www.encodeproject.org/files/ENCFF692GVG/) (for H3K27ac and H3K36me3) and [reference](https://www.encodeproject.org/files/GRCh38_no_alt_analysis_set_GCA_000001405.15/) for alignment. All the files were obtained from the ENCODE project[$$\small{^{[2]}}$$](#encode) site. Biosample is human CD14-positive monocyte cells. 
+For experiment we choose five H3 histone modifications: [__H3K4me1__](https://www.encodeproject.org/files/ENCFF076WOE/), [__H3K4me3__](https://www.encodeproject.org/files/ENCFF001FYS/), [__H3K27ac__](https://www.encodeproject.org/files/ENCFF000CEN/), [__H3K27me3__](https://www.encodeproject.org/files/ENCFF001FYR/), [__H3K36me3__](https://www.encodeproject.org/files/ENCFF000CFB/), control files [ENCFF825XKT](https://www.encodeproject.org/files/ENCFF825XKT/) (for H3K4me1), [ENCFF001HUV](https://www.encodeproject.org/files/ENCFF001HUV/) (for H3K4me3 and H3K27me3), [ENCFF692GVG](https://www.encodeproject.org/files/ENCFF692GVG/) (for H3K27ac and H3K36me3) and [reference](https://www.encodeproject.org/files/GRCh38_no_alt_analysis_set_GCA_000001405.15/) for alignment. All the files were obtained from the ENCODE project[[2]](#encode) site. Biosample is human CD14-positive monocyte cells. 
 
 We use:
 - bowtie2 (version 2.3.4.3) for reads alignment;
@@ -53,6 +53,22 @@ The script counts signal-to-noise ratio as ratio of 90 to 10 percentiles of geno
 `join_files.sh` is a supplementary script, that is runned by `peakcalling.sh` to mix chip and control with specified proportion.
 
 ## Results
+
+The following plots shows that increasing level of noise leads to decreasing in number of peaks and its average length.
+![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/n_peaks_fdr_FDR%200.05.png?raw=true)
+![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/len_peaks_fdr_FDR%200.05.png?raw=true)
+
+Visualization of true peaks (i.e. peaks, which algorithm could find in file with 0% of noise) percentage in peakcaller output shows that __SPAN is the most stable to noisy data__ and __lower FDR level leads to lower stability__.
+![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/pk_colors.png?raw=true)
+![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/true_peaks_dynamics.png?raw=true)
+
+Next barplots present percentage of overlapping peaks in reakcallers results. Bars are splitted into three groups for MACS2, SICER and SPAN respectively, and the higher bar is, the more peaks from other algorithm are embedded into peaks of the current. These plots shows that __SPAN data with FDR0.05 is the most consistent__ and __higher noise level leads to lower peaks sets similarity__.  
+
+![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/noise_colors.png?raw=true)
+#### FDR 0.05
+![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/plot_peak_set_comparison_fdr_FDR%200.05.png?raw=true)
+#### FDR 1e-6
+![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/plot_peak_set_comparison_fdr_FDR%201E-6.png?raw=true)
 
 ## References 
 

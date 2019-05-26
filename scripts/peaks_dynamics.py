@@ -1,5 +1,7 @@
 import os
+import re
 import numpy as np
+import pandas as pd
 
 
 def full_peak_dynamics(files):
@@ -44,21 +46,12 @@ def peak_dynamics(folder, file_end, ind):
 def read_peaks(fname):
     # takes file in .bed format as input
     # and returns array of [chrom, peak_start, peak_end]
-    peaks = []
-    line_splitted = []
-    lens = []
-
-    with open(fname) as f:
-        chr_ = ""
-        for line in f:
-            line_splitted = line.split("\t")
-            if line_splitted[0][3:].isdigit() or line_splitted[0][3:] in ["X", "Y"]:
-                if line_splitted[0][3:].isdigit():
-                    chr_ = int(line_splitted[0][3:])
-                else:
-                    chr_ = 23 if line_splitted[0][3:] == "X" else 24
-                peaks.append([chr_, int(line_splitted[1]), int(line_splitted[2])])
-    return np.asarray(peaks)
+    bed_file = pd.read_csv(fname, sep='\t', header=None)
+    bed_file = bed_file\
+        .where(bed_file[0].apply(lambda x: re.match('chr([0-9]+|[XY])', x) is not None))\
+        .dropna(how='all')
+    peaks = bed_file[[0, 1, 2]].values()
+    return peaks
 
 
 def cover(peaks1, peaks2):

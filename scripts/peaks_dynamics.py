@@ -4,35 +4,26 @@ import numpy as np
 
 def full_peak_dynamics(files):
     # takes list of files in .bed format and returns summary peak statistics for each
-    n_peaks = []
-    mean_len = []
-    n_splitted = []
-    n_united = []
+    n_peaks = np.zeros(10)
+    mean_len = np.zeros(10)
+    n_splitted = np.zeros(10)
+    n_united = np.zeros(10)
 
     prev_peaks = read_peaks(files[0])
-    n_peaks.append(prev_peaks.shape[0])
-    mean_len.append(np.mean(prev_peaks[:, 2] - prev_peaks[:, 1]))
+    n_peaks[0] = prev_peaks.shape[0]
+    mean_len[0] = np.mean(prev_peaks[:, 2] - prev_peaks[:, 1])
 
-    for i in range(1, len(files)):
-        peaks = read_peaks(files[i])
-        mean_len.append(np.mean(peaks[:, 2] - peaks[:, 1]))
-        n_peaks.append(peaks.shape[0])
+    for i, file in enumerate(files):
+        peaks = read_peaks(file)
+        mean_len[i] = np.mean(peaks[:, 2] - peaks[:, 1])
+        n_peaks[i] = peaks.shape[0]
 
-        curr_splitted = 0
-        curr_united = 0
         splitted = cover(prev_peaks, peaks)
-        n_splitted.append(np.count_nonzero(splitted > 1))
+        n_splitted[i] = np.count_nonzero(splitted > 1)
         united = cover(peaks, prev_peaks)
-        n_united.append(np.count_nonzero(united > 1))
+        n_united[i] = np.count_nonzero(united > 1)
 
         prev_peaks = peaks.copy()
-
-    if len(mean_len) < 10:
-        for _ in range(len(mean_len), 10):
-            n_splitted.append(0)
-            n_united.append(0)
-            n_peaks.append(0)
-            mean_len.append(0)
 
     return n_splitted, n_united, n_peaks, mean_len
 
@@ -41,17 +32,17 @@ def peak_dynamics(folder, file_end, ind):
     # returns only statistics of number of peaks and average peak length dynamics
     filenames = get_filenames(folder, file_end, ind)
 
-    ns, mean_lens = [], []
-    for f in filenames:
-        p = read_peaks(f)
-        ns.append(p.shape[0])
-        mean_lens.append(np.mean(p[:, 2] - p[:, 1]))
+    ns, mean_lens = np.zeros(len(ind)), np.zeros(len(ind))
+    for i, file in enumerate(filenames):
+        peaks = read_peaks(file)
+        ns[i] = peaks.shape[0]
+        mean_lens[i] = np.mean(peaks[:, 2] - peaks[:, 1])
 
     return ns, mean_lens
 
 
 def read_peaks(fname):
-    # takes file in .bed format as input a
+    # takes file in .bed format as input
     # and returns array of [chrom, peak_start, peak_end]
     peaks = []
     line_splitted = []

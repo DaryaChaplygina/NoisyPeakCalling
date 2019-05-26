@@ -14,62 +14,42 @@ alg_colors = ["b", "r", "g"]
 
 def plot_peaks_dynamics(path_dict, ind, fdr):
     # draw plot of changing number of peaks and average peak length
-    ns = []
-    means = []
+    ns = np.array()
+    means = np.array()
     for h in ["h3k4me1", "h3k4me3", "h3k27ac", "h3k27me3", "h3k36me3"]:
         for [folder, file_end] in path_dict[h]:
             n, m = peak_dynamics(folder, file_end, ind)
-            ns = ns + n
-            means = means + m
+            ns = np.concatenate((ns, n), axis=1)
+            means = np.concatenate((means, m), axis=1)
 
-    x = np.asarray([i * 0.25 for i in range(len(ind))])
-    plt.figure(figsize=(10, 5))
-    for i in range(
-            0, len(histones) * len(algorithms) * len(ind), len(algorithms) * len(ind)
-    ):
-        for j in range(len(algorithms)):
-            plt.bar(
-                x,
-                ns[i + j * len(ind): i + (j + 1) * len(ind)],
-                width=0.25,
-                color=alg_colors[j],
-            )
-            x += 0.25 * len(ind)
-        x += 0.5
-    plt.legend(algorithms)
-    plt.xticks(
-        [2.5, 8.25, 14, 19.75, 25.5],
-        ["h3k4me1", "h3k4me3", "h3k27ac", "h3k27me3", "h3k36me3"],
-        fontsize=15,
-    )
-    plt.title(f"Number of peaks; {fdr}")
-    plt.savefig(f"../result/n_peaks_fdr_{fdr}.png")
-    plt.show()
+    def dynamic_plot(values, title, title_to_save):
+        x = np.asarray([i * 0.25 for i in range(len(ind))])
+        plt.figure(figsize=(10, 5))
 
-    x = np.asarray([i * 0.25 for i in range(len(ind))])
-    plt.figure(figsize=(10, 5))
-    plt.ylim([0, 14000])
-    for i in range(
-            0, len(histones) * len(algorithms) * len(ind), len(algorithms) * len(ind)
-    ):
-        for j in range(len(algorithms)):
-            plt.bar(
-                x,
-                means[i + j * len(ind): i + (j + 1) * len(ind)],
-                width=0.25,
-                color=alg_colors[j],
-            )
-            x += 0.25 * len(ind)
-        x += 0.5
-    plt.legend(algorithms)
-    plt.xticks(
-        [2.5, 8.25, 14, 19.75, 25.5],
-        ["h3k4me1", "h3k4me3", "h3k27ac", "h3k27me3", "h3k36me3"],
-        fontsize=15,
-    )
-    plt.title(f"Average peak length; {fdr}")
-    plt.savefig(f"../result/len_peaks_fdr_{fdr}.png")
-    plt.show()
+        for i in range(
+                0, len(histones) * len(algorithms) * len(ind), len(algorithms) * len(ind)
+        ):
+            for j in range(len(algorithms)):
+                plt.bar(
+                    x,
+                    values[i + j * len(ind): i + (j + 1) * len(ind)],
+                    width=0.25,
+                    color=alg_colors[j],
+                )
+                x += 0.25 * len(ind)
+            x += 0.5
+
+        plt.legend(algorithms)
+        plt.xticks(
+            [2.5, 8.25, 14, 19.75, 25.5],
+            ["h3k4me1", "h3k4me3", "h3k27ac", "h3k27me3", "h3k36me3"],
+            fontsize=15,
+        )
+        plt.title(f"{title}; {fdr}")
+        plt.savefig(f"../result/{title_to_save}_fdr_{fdr}.png")
+
+    dynamic_plot(ns, 'Number of peaks', 'n_peaks')
+    dynamic_plot(ns, 'Average peak length', 'len_peaks')
 
 
 def plot_true_peaks_comparison():

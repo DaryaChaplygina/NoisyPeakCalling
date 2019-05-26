@@ -117,7 +117,7 @@ def cover(peaks1, peaks2):
     return res
 
 
-def get_filenames(folder, file_end, ind=[i for i in range(10)]):
+def get_filenames(folder, file_end, ind=range(10)):
     filenames = []
     for f in os.listdir(folder):
         if f.endswith(file_end):

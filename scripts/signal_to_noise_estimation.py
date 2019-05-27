@@ -10,8 +10,8 @@ def SNR_count(filepath, fragment_size, bin_size, percentiles):
     counts = bin_coverage(filepath, fragment_size, bin_size)[1:]
     snrs = []
     for i in range(0, len(percentiles), 2):
-        noise = get_quantie_from_freqs(percentiles[i], counts) + 1
-        signal = get_quantie_from_freqs(percentiles[i + 1], counts) + 1
+        noise = get_quantile_from_freqs(percentiles[i], counts) + 1
+        signal = get_quantile_from_freqs(percentiles[i + 1], counts) + 1
         snrs.append(signal / noise)
 
     return snrs
@@ -56,20 +56,19 @@ def bin_coverage(filepath, fragment_size, bin_size):
     return counts
 
 
-def get_quantie_from_freqs(q, freqs):
+def get_quantile_from_freqs(q, freqs):
     idx = 0
-    for c in range(len(freqs)):
-        if freqs[c] != 0:
-            idx = c
+    for i, f in enumerate(freqs):  # last nonzero element
+        if f != 0:
+            idx = i
 
     sum_ = sum(freqs[: idx + 1])
-    k = int(q * (sum_ - 1))
     i = -1
 
-    curr_sum = 0
-    while curr_sum / sum_ < q and i < idx:
+    cumsum = 0
+    while cumsum / sum_ < q and i < idx:
         i += 1
-        curr_sum += freqs[i]
+        cumsum += freqs[i]
 
     return i
 

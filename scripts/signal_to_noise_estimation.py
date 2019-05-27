@@ -50,7 +50,7 @@ def bin_coverage(filepath, fragment_size, bin_size):
 
         try:
             bins[pos // bin_size].add(pos % bin_size)
-        except:
+        except IndexError:
             continue
 
     return counts

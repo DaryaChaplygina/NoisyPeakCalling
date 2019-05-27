@@ -47,9 +47,21 @@ def read_peaks(fname):
     # takes file in .bed format as input
     # and returns array of [chrom, peak_start, peak_end]
     bed_file = pd.read_csv(fname, sep='\t', header=None)
+
+    def chrom_parser(s):
+        m = re.match('chr([0-9]+|[XY])', s)
+        if m is None:
+            return None
+        else:
+            if m.group(1).isdigit():
+                return int(m.group(1))
+            else:
+                return 23 if m.group(1) == 'X' else 24
+
     bed_file = bed_file\
-        .where(bed_file[0].apply(lambda x: re.match('chr([0-9]+|[XY])', x) is not None))\
-        .dropna(how='all')
+        .where(bed_file[0].apply(chrom_parser))\
+        .dropna(how='any')
+
     peaks = bed_file[[0, 1, 2]].values()
     return peaks
 

@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+sambamba_path="/home/dario/bioinf/tools/sambamba-0.6.9"
+
 if [[ $1 == "-h" || $1 == "--help" ]]; then
   echo "Program to mix ChIP-seq and control aligned reads.
   Usage: [chip_file (.bam)] [control_file (.bam)] [n_reads]
@@ -13,15 +15,20 @@ if [[ "$#" -ne 6 ]]; then
   exit 1
 fi
 
+if [[ ! -f $sambamba_path ]]; then
+    echo "Sambamba not found! Please check if sambamba_path is set to existing file"
+    exit 1
+fi
+
 chip=$1
 control=$2
 n_reads=$3
 chip_lines=$4
 control_lines=$5
 noise=$6
-sambamba_path="/home/dario/bioinf/tools/sambamba-0.6.9"
 
 control_subsample_lines=$(bc -l <<< ${n_reads}*${noise}/${control_lines}/10)
+
 if [[ ${control_subsample_lines} = 0 ]]; then
   chip_subsample_lines=$(bc -l <<< ${n_reads}/${chip_lines})
   ${sambamba_path} -q view --subsampling-seed=42 -f bam -o merged$i.bam -t 4 -s $chip_subsample_lines $chip

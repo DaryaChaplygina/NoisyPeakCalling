@@ -14,7 +14,7 @@ The aims of the project:
 3. To analyse the influence of noise on __MACS2__, __SICER__ and __SPAN__ peak calling algorithms.
 
 ## Methods
-
+bedtoolsbedtools
 ### Data
 
 For experiment we choose five H3 histone modifications: [__H3K4me1__](https://www.encodeproject.org/files/ENCFF076WOE/), [__H3K4me3__](https://www.encodeproject.org/files/ENCFF001FYS/), [__H3K27ac__](https://www.encodeproject.org/files/ENCFF000CEN/), [__H3K27me3__](https://www.encodeproject.org/files/ENCFF001FYR/), [__H3K36me3__](https://www.encodeproject.org/files/ENCFF000CFB/), control files [ENCFF825XKT](https://www.encodeproject.org/files/ENCFF825XKT/) (for H3K4me1), [ENCFF001HUV](https://www.encodeproject.org/files/ENCFF001HUV/) (for H3K4me3 and H3K27me3), [ENCFF692GVG](https://www.encodeproject.org/files/ENCFF692GVG/) (for H3K27ac and H3K36me3) and [reference](https://www.encodeproject.org/files/GRCh38_no_alt_analysis_set_GCA_000001405.15/) for alignment. All the files were obtained from the ENCODE project[[2]](#encode) site. Biosample is human CD14-positive monocyte cells. 
@@ -23,9 +23,10 @@ We use:
 - bowtie2 (version 2.3.4.3) for reads alignment;
 - samtools (1.9) for sorting and filtering;
 - bamCoverage from deeptools package (version 3.2.1) to obtain bigWig files;
-- bamtobed from bedtools package (version 2.26.0) to obtain bed files from alignment.
+- bamtobed from bedtools package (version 2.28.0) to obtain bed files from alignment;
+- sambamba (version 0.6.6) for mixing ChIP-seq and control reads.
 
-All the commands have standard settings.
+All the commands for alignment have standard settings.
 
 ### Project scripts
 

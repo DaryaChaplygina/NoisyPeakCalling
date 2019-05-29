@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-sicer_path="home/dario/bioinf/tools/SICER_V1.1/SICER/SICER.sh"
+sicer_path="SICER.sh"
 span_path="/home/dario/bioinf/tools/span/span-0.11.0.build.jar"
 out_dir="../data/"
 span_cs="/home/dario/bioinf/tools/span/hg38.chrom.sizes"
@@ -26,13 +26,7 @@ peak_caller=$5
 fdr=$6
 
 case ${peak_caller} in
-  macs2)
-    ;;
-  sicer)
-    if [[ ! -f ${sicer_path} ]]; then
-      echo "SICER not found! Please check if sicer_path is set to existing file"
-      exit 1
-    fi
+  macs2|sicer)
     ;;
   span)
     if [[ ! -f ${span_path} ]]; then

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-sambamba_path="/home/dario/bioinf/tools/sambamba-0.6.9"
+sambamba_path="sambamba"
 
 if [[ $1 == "-h" || $1 == "--help" ]]; then
   echo "Program to mix ChIP-seq and control aligned reads.
@@ -13,11 +13,6 @@ fi
 if [[ "$#" -ne 6 ]]; then
   echo "Incorrect number of arguments (use -h for help)"
   exit 1
-fi
-
-if [[ ! -f $sambamba_path ]]; then
-    echo "Sambamba not found! Please check if sambamba_path is set to existing file"
-    exit 1
 fi
 
 chip=$1

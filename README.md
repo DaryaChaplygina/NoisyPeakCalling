@@ -14,7 +14,6 @@ The aims of the project:
 3. To analyse the influence of noise on __MACS2__[[2]](#macs2), __SICER__[[3]](#sicer) and __SPAN__[[4]](#span) peak calling algorithms.
 
 ## Methods
-bedtoolsbedtools
 ### Data
 
 For experiment we choose five H3 histone modifications: [__H3K4me1__](https://www.encodeproject.org/files/ENCFF076WOE/), [__H3K4me3__](https://www.encodeproject.org/files/ENCFF001FYS/), [__H3K27ac__](https://www.encodeproject.org/files/ENCFF000CEN/), [__H3K27me3__](https://www.encodeproject.org/files/ENCFF001FYR/), [__H3K36me3__](https://www.encodeproject.org/files/ENCFF000CFB/), control files [ENCFF825XKT](https://www.encodeproject.org/files/ENCFF825XKT/) (for H3K4me1), [ENCFF001HUV](https://www.encodeproject.org/files/ENCFF001HUV/) (for H3K4me3 and H3K27me3), [ENCFF692GVG](https://www.encodeproject.org/files/ENCFF692GVG/) (for H3K27ac and H3K36me3) and [reference](https://www.encodeproject.org/files/GRCh38_no_alt_analysis_set_GCA_000001405.15/) for alignment. All the files were obtained from the ENCODE project[[5]](#encode) site. Biosample is human CD14-positive monocyte cells. 
@@ -29,6 +28,12 @@ We use:
 All the commands for alignment have standard settings.
 
 ### Project scripts
+
+`prepare_dataset.sh` takes as input _[data_folder]_ _[ref]_, where
+- _data_folder_ is an existing directory with .fastq files you want to align
+- _ref_ is a .fasta file with reference for your data. 
+
+The script aligns and indexes all the .fastq files in _data_folder_ using _ref_ as reference.
 
 `peakcalling.sh`  takes as input _[chip]_ _[control]_ _[n_reads]_ _[name]_ _[peakcaller]_ _[fdr]_, where
 - _chip_ is aligned chip-seq reads
@@ -53,24 +58,40 @@ The script counts signal-to-noise ratio as ratio of 90 to 10 percentiles of geno
 
 `join_files.sh` is a supplementary script, that is runned by `peakcalling.sh` to mix chip and control with specified proportion.
 
+### Project pipeline
+
+- Download files listed in __data__ 
+- Run `./prepare_data.sh` separetely on your chip and then on control data
+- Run `./peakcalling.sh` to obtain noisy peak calling data
+- Get peak overlapping info from JBR Genome Browser and write it in `jbr_gb_data.py`. More detailed instructions could be found in that file.
+- Run `result_visualization.py` to get graphs for your data. Note that you don't need to follow the whole pipeline to obtain results:  
+    - for _figures 1-2_ from __results__ one could use `plot_peaks_dynamics()` wich requires only files from `./peakcalling.sh`
+    - for _figures 3-5_ functions `plot_true_peaks_comparison()` and `plot_peak_set_comparison()` require only genome browser data (they are already listed for given dataset)
+
 ## Results
 
 The following plots shows that increasing level of noise leads to decreasing in number of peaks and its average length.
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/n_peaks_fdr_FDR%200.05.png?raw=true)
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/len_peaks_fdr_FDR%200.05.png?raw=true)
+_<p align="center">Figure 1-2</p>_
+
 
 Visualization of true peaks (i.e. peaks, which algorithm could find in file with 0% of noise) percentage in peakcaller output shows that __SPAN is the most stable to noisy data__ and __lower FDR level leads to lower stability__.
 
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/pk_colors.png?raw=true)
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/true_peaks_dynamics.png?raw=true)
+_<p align="center">Figure 3</p>_
 
 Next barplots present percentage of overlapping peaks in reakcallers results. Bars are splitted into three groups for MACS2, SICER and SPAN respectively, and the higher bar is, the more peaks from other algorithm are embedded into peaks of the current. These plots shows that __SPAN data with FDR0.05 is the most consistent__ and __higher noise level leads to lower peaks sets similarity__.  
 
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/noise_colors.png?raw=true)
 #### FDR 0.05
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/plot_peak_set_comparison_fdr_FDR%200.05.png?raw=true)
+_<p align="center">Figure 4</p>_
+
 #### FDR 1e-6
 ![](https://github.com/DaryaChaplygina/NoisyPeakCalling/blob/master/result/plot_peak_set_comparison_fdr_FDR%201E-6.png?raw=true)
+_<p align="center">Figure 5</p>_
 
 ## References 
 

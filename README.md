@@ -61,7 +61,8 @@ The script counts signal-to-noise ratio as ratio of 90 to 10 percentiles of geno
 ### Project pipeline
 
 - Download files listed in __data__ 
-- Run `./prepare_data.sh` separetely on your chip and then on control data
+- Run `conda env create -f env.yaml` to get all the required programs
+- Run `./prepare_data.sh` to align your ChIP-seq and control reads
 - Run `./peakcalling.sh` to obtain noisy peak calling data
 - Get peak overlapping info from JBR Genome Browser and write it in `jbr_gb_data.py`. More detailed instructions could be found in that file.
 - Run `result_visualization.py` to get graphs for your data. Note that you don't need to follow the whole pipeline to obtain results:  

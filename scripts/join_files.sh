@@ -26,11 +26,11 @@ control_subsample_lines=$(bc -l <<< ${n_reads}*${noise}/${control_lines}/10)
 
 if [[ ${control_subsample_lines} = 0 ]]; then
   chip_subsample_lines=$(bc -l <<< ${n_reads}/${chip_lines})
-  ${sambamba_path} -q view --subsampling-seed=42 -f bam -o merged$i.bam -t 4 -s $chip_subsample_lines $chip
+  ${sambamba_path} view --subsampling-seed=42 -f bam -o merged$i.bam -t 4 -s $chip_subsample_lines $chip
 else
-  ${sambamba_path} -q view --subsampling-seed=42 -f bam -o tmp_control.bam -t 4 -s $control_subsample_lines $control
+  ${sambamba_path} view --subsampling-seed=42 -f bam -o tmp_control.bam -t 4 -s $control_subsample_lines $control
   control_lines_new=$(${sambamba_path} -q view -t 4 -c tmp_control.bam)
   chip_subsample_lines=$(bc -l <<< ${n_reads}/${chip_lines}-${control_lines_new}/${chip_lines})
-  ${sambamba_path} -q view --subsampling-seed=42 -f bam -o tmp_chip.bam -t 4 -s $chip_subsample_lines $chip
-  ${sambamba_path} -q merge -t 4 merged${noise}.bam tmp_chip.bam tmp_control.bam
+  ${sambamba_path} view --subsampling-seed=42 -f bam -o tmp_chip.bam -t 4 -s $chip_subsample_lines $chip
+  ${sambamba_path} merge -t 4 merged${noise}.bam tmp_chip.bam tmp_control.bam
 fi

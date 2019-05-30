@@ -26,7 +26,11 @@ peak_caller=$5
 fdr=$6
 
 case ${peak_caller} in
-  macs2|sicer)
+  macs2)
+    ;;
+  sicer)
+    bedtools bamtobed -i ${control} > control.bed
+    mkdir ${out_dir}${name}/${peak_caller}_fdr${fdr}
     ;;
   span)
     if [[ ! -f ${span_path} ]]; then
@@ -54,11 +58,10 @@ for i in {0..9}
         macs2 callpeak -t merged${i}.bam -c ${control} -n ${name}_${i} --outdir ${out_dir}${name}/${peak_caller}_fdr${fdr} --broad -q ${fdr} --broad-cutoff ${fdr}
     elif [[ ${peak_caller} == "sicer" ]] ; then
         bedtools bamtobed -i merged${i}.bam > merged${i}.bed
-        control=$(echo ${control} | cut -d'.' -f 1)
-        sh ${sicer_path} . merged${i}.bed ${control}.bed ${out_dir}${name}/${peak_caller}_fdr${fdr}/ hg38 1 200 150 0.75 400 ${fdr}
+        ${sicer_path} . merged${i}.bed control.bed ${out_dir}${name}/${peak_caller}_fdr${fdr} hg38 1 200 150 0.75 400 ${fdr}
+        rm -rf ${out_dir}${name}/${peak_caller}_fdr${fdr}/*.bed
         rm -rf merged${i}.bed
-        rm -rf merged${i}-1-removed.bed
-        rm -rf huv-1-removed.bed
+        rm -rf chr.list
     else
       java -Xmx6G -jar ${span_path} analyze -t merged${i}.bam -c ${control} -f ${fdr} --threads 4 --cs ${span_cs} -p ${out_dir}${name}/${peak_caller}_fdr${fdr}/${name}_${i}.peak
       rm -rf logs/
@@ -69,3 +72,11 @@ for i in {0..9}
     rm -rf *.bam
     rm -rf *.bai
   done 
+  
+if [[ ${peak_caller} == "sicer" ]]; then
+  for i in {0..9}
+    do
+      mv ${out_dir}${name}/${peak_caller}_fdr${fdr}/merged${i}-W200-G400-islands-summary-FDR${fdr} ${out_dir}${name}/${peak_caller}_fdr${fdr}/merged${i}-W200-G400-islands-summary-FDR${fdr}.bed
+    done
+  rm -rf control.bed
+fi

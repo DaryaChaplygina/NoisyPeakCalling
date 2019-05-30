@@ -11,13 +11,13 @@ According to Jung2014[[1]](#jung), derived set of peaks could vary depending on 
 The aims of the project:
 1. To study ChIP-seq protocol and Jung2014 paper.
 2. To acquire noisy data for an experiment.
-3. To analyse the influence of noise on __MACS2__, __SICER__ and __SPAN__ peak calling algorithms.
+3. To analyse the influence of noise on __MACS2__[[2]](#macs2), __SICER__[[3]](#sicer) and __SPAN__[[4]](#span) peak calling algorithms.
 
 ## Methods
 bedtoolsbedtools
 ### Data
 
-For experiment we choose five H3 histone modifications: [__H3K4me1__](https://www.encodeproject.org/files/ENCFF076WOE/), [__H3K4me3__](https://www.encodeproject.org/files/ENCFF001FYS/), [__H3K27ac__](https://www.encodeproject.org/files/ENCFF000CEN/), [__H3K27me3__](https://www.encodeproject.org/files/ENCFF001FYR/), [__H3K36me3__](https://www.encodeproject.org/files/ENCFF000CFB/), control files [ENCFF825XKT](https://www.encodeproject.org/files/ENCFF825XKT/) (for H3K4me1), [ENCFF001HUV](https://www.encodeproject.org/files/ENCFF001HUV/) (for H3K4me3 and H3K27me3), [ENCFF692GVG](https://www.encodeproject.org/files/ENCFF692GVG/) (for H3K27ac and H3K36me3) and [reference](https://www.encodeproject.org/files/GRCh38_no_alt_analysis_set_GCA_000001405.15/) for alignment. All the files were obtained from the ENCODE project[[2]](#encode) site. Biosample is human CD14-positive monocyte cells. 
+For experiment we choose five H3 histone modifications: [__H3K4me1__](https://www.encodeproject.org/files/ENCFF076WOE/), [__H3K4me3__](https://www.encodeproject.org/files/ENCFF001FYS/), [__H3K27ac__](https://www.encodeproject.org/files/ENCFF000CEN/), [__H3K27me3__](https://www.encodeproject.org/files/ENCFF001FYR/), [__H3K36me3__](https://www.encodeproject.org/files/ENCFF000CFB/), control files [ENCFF825XKT](https://www.encodeproject.org/files/ENCFF825XKT/) (for H3K4me1), [ENCFF001HUV](https://www.encodeproject.org/files/ENCFF001HUV/) (for H3K4me3 and H3K27me3), [ENCFF692GVG](https://www.encodeproject.org/files/ENCFF692GVG/) (for H3K27ac and H3K36me3) and [reference](https://www.encodeproject.org/files/GRCh38_no_alt_analysis_set_GCA_000001405.15/) for alignment. All the files were obtained from the ENCODE project[[5]](#encode) site. Biosample is human CD14-positive monocyte cells. 
 
 We use:
 - bowtie2 (version 2.3.4.3) for reads alignment;
@@ -76,4 +76,10 @@ Next barplots present percentage of overlapping peaks in reakcallers results. Ba
 
 <a name="jung">[1]</a>  Jung YL, Luquette LJ, Ho JW, et al. Impact of sequencing depth in ChIP-seq experiments. Nucleic Acids Res. 2014;42(9):e74. doi:10.1093/nar/gku178
 
-<a name="encode">[2]</a>  Encyclopedia of DNA Elements. https://www.encodeproject.org/
+<a name="macs2">[2]</a>  Zhang Y, Liu T, Meyer CA, et al. Model-based analysis of ChIP-Seq (MACS). Genome Biol. 2008;9(9):R137. doi:10.1186/gb-2008-9-9-r137
+
+<a name="sicer">[3]</a>  Xu S, Grullon S, Ge K, Peng W. Spatial clustering for identification of ChIP-enriched regions (SICER) to map regions of histone methylation patterns in embryonic stem cells. Methods Mol Biol. 2014;1150:97–111. doi:10.1007/978-1-4939-0512-6_5
+
+<a name="span">[4]</a> SPAN Semi-supervised Peak Analyzer https://github.com/JetBrains-Research/span
+
+<a name="encode">[5]</a>  Encyclopedia of DNA Elements. https://www.encodeproject.org/

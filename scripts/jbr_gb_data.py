@@ -1,7 +1,16 @@
 class AlgorithmsStats:
     """
     This class holds the data from overlapping tracks in JBR Genome Browser.
-    The source pictures could be found in folder /pics/.
+    The data could be obtained by loading output from ./peakcalling.sh
+    into JBR Genome Browser.
+    To get pc_stability_data one should select tracks from the same
+    algorithm and histone modification with noise level from 0% to 90%
+    and choose "Overlap info for N track...".
+    pc_similarity_data could be obtained from overlapping tracks of
+    three algorithms for the same histone modification and
+    level of noise (0% and 50% separately).
+    The source pictures with overlapping percent could be found
+    in folder /pics/.
     """
 
     pc_stability_data = {
@@ -247,9 +256,19 @@ class AlgorithmsStats:
     }
 
     def get_pc_histone_stability(self, peak_caller, pc_params, histone):
+        """
+        Returns percentage of true peaks obtained by running
+        algorithm peak_caller with parameters pc_params on file histone
+        with level of noise from 0% to 90%
+        """
         return self.pc_stability_data[pc_params][peak_caller][histone]
 
     def get_pc_stability(self, peak_caller, pc_params, histones):
+        """
+        Returns percentage of true peaks obtained by running
+        algorithm peak_caller with parameters pc_params on files,
+        listed in histones, with level of noise from 0% to 90%
+        """
         res = []
         for h in histones:
             res.append(self.get_pc_histone_stability(peak_caller, pc_params, h))
@@ -257,6 +276,11 @@ class AlgorithmsStats:
         return res
 
     def get_pc_histone_similarity(self, peak_callers, pc_params, histone):
-        return self.pc_similarity_data[pc_params][peak_callers[0]][peak_callers[1]][
-            histone
-        ]
+        """
+        Returns percentage of peaks from peak_callers[1]
+        that are embedded into peaks from peak_callers[0], with
+        both algorithms having parameters pc_params and running on
+        file histone
+        """
+        return self\
+            .pc_similarity_data[pc_params][peak_callers[0]][peak_callers[1]][histone]

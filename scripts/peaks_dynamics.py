@@ -12,11 +12,13 @@ def full_peak_dynamics(files):
     n_united = np.zeros(10)
 
     prev_peaks = read_peaks(files[0])
+    prev_peaks = prev_peaks[np.lexsort((prev_peaks[:, 1], prev_peaks[:, 0]))]
     n_peaks[0] = prev_peaks.shape[0]
     mean_len[0] = np.mean(prev_peaks[:, 2] - prev_peaks[:, 1])
 
     for i, file in enumerate(files):
         peaks = read_peaks(file)
+        peaks = peaks[np.lexsort((peaks[:, 1], peaks[:, 0]))]
         mean_len[i] = np.mean(peaks[:, 2] - peaks[:, 1])
         n_peaks[i] = peaks.shape[0]
 
@@ -74,19 +76,10 @@ def cover(peaks1, peaks2):
     N1 = peaks1.shape[0]
     res = np.zeros(peaks1.shape[0])
 
-    def __move_chrom(idx, peak):
+    def move_chrom(idx, peak):
         while peaks1[idx, 0] != peak[0] and idx + 1 < N1:
-            if peaks1[idx, 0] > int(peak[0]):
+            if peaks1[idx, 0] > peak[0]:
                 break
-
-            idx += 1
-        if idx + 1 == N1:
-            return -1
-        else:
-            return idx
-
-    def __move_start(idx, thr, chrom):
-        while peaks1[idx, 0] == chrom and idx + 1 < N1 and peaks1[idx, 1] <= thr:
             idx += 1
 
         if idx + 1 == N1:
@@ -94,38 +87,49 @@ def cover(peaks1, peaks2):
         else:
             return idx
 
-    def __move_end(idx, thr, chrom):
-        while peaks1[idx, 0] == chrom and idx + 1 < N1 and peaks1[idx, 2] < thr:
+    def move_peak_coord(idx, other_chrom, thr, coord, comp):
+        while (peaks1[idx, 0] == other_chrom and idx + 1 < N1 and
+                comp(peaks1[idx, coord], thr)):
             idx += 1
+
         if idx + 1 == N1:
             return -1
         else:
             return idx
 
     for peak in peaks2:
+        if peak[0] < peaks1[idx1, 0]:
+            idx1 = move_chrom(idx1, peak)
+            if idx1 == -1:
+                break
+
         if peak[0] == peaks1[idx1, 0]:
             if peaks1[idx1, 1] <= peak[1] and peaks1[idx1, 2] >= peak[2]:
+                # peaks1 : |..........|
+                # peaks2 :  |........|
                 res[idx1] += 1
 
             elif peaks1[idx1, 1] > peak[1]:
+                # peaks1 :    |.....
+                # peaks2 : |........
                 if peaks1[idx1, 1] <= peak[2]:
-                    idx1 = __move_start(idx1, peak[2], peak[0])
+                    idx1 = move_peak_coord(idx1, peak[0], peak[2], 1, lambda x, y: x <= y)
                     if idx1 == -1:
                         break
 
             else:
+                # peaks1 : ...|
+                # peaks2 : ......|
                 if peaks1[idx1, 2] < peak[1]:
-                    idx1 = __move_end(idx1, peak[2], peak[0])
+                    idx1 = move_peak_coord(idx1, peak[0], peak[2], 2, lambda x, y: x < y)
                     if idx1 == -1:
                         break
                     if peaks1[idx1, 1] <= peak[1]:
                         res[idx1] += 1
                     else:
-                        __move_start(idx1, peak[2], peak[0])
-        else:
-            idx1 = __move_chrom(idx1, peak)
-            if idx1 == -1:
-                break
+                        move_peak_coord(idx1, peak[0], peak[2], 1, lambda x, y: x <= y)
+                else:
+                    move_peak_coord(idx1, peak[0], peak[2], 1, lambda x, y: x <= y)
     return res
 
 
@@ -133,7 +137,7 @@ def get_filenames(folder, file_end, ind=range(10)):
     filenames = []
     for f in os.listdir(folder):
         if f.endswith(file_end):
-            if not "10" in f:
+            if "10" not in f:
                 filenames.append(folder + f)
 
     filenames = sorted(filenames)

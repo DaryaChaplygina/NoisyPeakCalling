@@ -5,7 +5,14 @@ import pandas as pd
 
 
 def full_peak_dynamics(files):
-    # takes list of files in .bed format and returns summary peak statistics for each
+    """
+    Takes list of files in .bed format and returns 4 arrays with
+    summary peaks statistics:
+    number of peaks, splitted with increasing level of noise
+    number of peaks, united with increasing level of noise
+    number of peaks
+    average peak length
+    """
     n_peaks = np.zeros(10)
     mean_len = np.zeros(10)
     n_splitted = np.zeros(10)
@@ -33,7 +40,12 @@ def full_peak_dynamics(files):
 
 
 def peak_dynamics(folder, file_end, ind):
-    # returns only statistics of number of peaks and average peak length dynamics
+    """
+    Takes list of files in .bed format and returns 2 arrays with
+    summary peaks statistics:
+    number of peaks
+    average peak length
+    """
     filenames = get_filenames(folder, file_end, ind)
 
     ns, mean_lens = np.zeros(len(ind)), np.zeros(len(ind))
@@ -46,8 +58,10 @@ def peak_dynamics(folder, file_end, ind):
 
 
 def read_peaks(fname):
-    # takes file in .bed format as input
-    # and returns array of [chrom, peak_start, peak_end]
+    """
+    Takes file in .bed format as input and
+    returns array of [chrom, peak_start, peak_end]
+    """
     bed_file = pd.read_csv(fname, sep='\t', header=None)
 
     def chrom_parser(s):
@@ -69,8 +83,11 @@ def read_peaks(fname):
 
 
 def cover(peaks1, peaks2):
-    # returns array of shape (peaks1.shape[0], )
-    # with number of peaks from peaks2 that are embedded in peak from peaks1
+    """
+    Returns array of shape (peaks1.shape[0], ) res,
+    where res[i] = n means that ith peak from peaks1
+    contains n peaks from peaks2
+    """
     curr_chr = peaks1[0][0]
     idx1 = 0
     N1 = peaks1.shape[0]
@@ -134,6 +151,10 @@ def cover(peaks1, peaks2):
 
 
 def get_filenames(folder, file_end, ind=range(10)):
+    """
+    Returns list of noisy peak calling files from folder
+    in order of increasing noise rate
+    """
     filenames = []
     for f in os.listdir(folder):
         if f.endswith(file_end):

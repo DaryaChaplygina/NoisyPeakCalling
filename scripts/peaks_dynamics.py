@@ -74,11 +74,10 @@ def read_peaks(fname):
             else:
                 return 23 if m.group(1) == 'X' else 24
 
-    bed_file = bed_file\
-        .where(bed_file[0].apply(chrom_parser))\
-        .dropna(how='any')
+    bed_file[0] = bed_file[0].apply(chrom_parser)
+    bed_file.dropna(how='any', inplace=True)
 
-    peaks = bed_file[[0, 1, 2]].values()
+    peaks = bed_file[[0, 1, 2]].values
     return peaks
 
 

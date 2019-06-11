@@ -14,18 +14,20 @@ alg_colors = ["b", "r", "g"]
 
 def plot_peaks_dynamics(path_dict, ind, fdr):
     # draw plot of changing number of peaks and average peak length
-    ns = np.array()
-    means = np.array()
-    for h in ["h3k4me1", "h3k4me3", "h3k27ac", "h3k27me3", "h3k36me3"]:
+    ns = np.zeros((len(histones) * len(algorithms) * len(ind),))
+    means = np.zeros((len(histones) * len(algorithms) * len(ind),))
+    idx = 0
+    for h in histones:
         for [folder, file_end] in path_dict[h]:
             n, m = peak_dynamics(folder, file_end, ind)
-            ns = np.concatenate((ns, n), axis=1)
-            means = np.concatenate((means, m), axis=1)
+            ns[idx:idx + len(ind)] = n
+            means[idx:idx + len(ind)] = m
+            idx += len(ind)
 
-    def dynamic_plot(values, title, title_to_save):
+    def dynamic_plot(values, title, title_to_save, ylim):
         x = np.asarray([i * 0.25 for i in range(len(ind))])
         plt.figure(figsize=(10, 5))
-
+        plt.ylim([0, ylim])
         for i in range(
                 0, len(histones) * len(algorithms) * len(ind), len(algorithms) * len(ind)
         ):
@@ -47,9 +49,10 @@ def plot_peaks_dynamics(path_dict, ind, fdr):
         )
         plt.title(f"{title}; {fdr}")
         plt.savefig(f"../result/{title_to_save}_fdr_{fdr}.png")
+        plt.show()
 
-    dynamic_plot(ns, 'Number of peaks', 'n_peaks')
-    dynamic_plot(ns, 'Average peak length', 'len_peaks')
+    dynamic_plot(ns, 'Number of peaks', 'n_peaks', 130000)
+    dynamic_plot(means, 'Average peak length', 'len_peaks', 14000)
 
 
 def plot_true_peaks_comparison():
@@ -113,6 +116,6 @@ def plot_peak_set_comparison(fdr):
 if __name__ == "__main__":
     plot_true_peaks_comparison()
     ind = [i for i in range(7)]
-    for fdr, path_dict in zip(fdrs, [fdr_05_path, fdr_e6_path]):
+    for fdr, path_dict in zip(fdrs, [fdr_e6_path, fdr_05_path]):
         plot_peaks_dynamics(path_dict, ind, fdr)
         plot_peak_set_comparison(fdr)

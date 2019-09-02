@@ -1,7 +1,6 @@
 #!/bin/bash
 
 
-sicer_path="SICER.sh"
 span_path="/home/dario/bioinf/tools/span/span-0.11.0.build.jar"
 out_dir="../data/"
 span_cs="/home/dario/bioinf/tools/span/hg38.chrom.sizes"
@@ -58,7 +57,7 @@ for i in {0..9}
         macs2 callpeak -t merged${i}.bam -c ${control} -n ${name}_${i} --outdir ${out_dir}${name}/${peak_caller}_fdr${fdr} --broad -q ${fdr} --broad-cutoff ${fdr}
     elif [[ ${peak_caller} == "sicer" ]] ; then
         bedtools bamtobed -i merged${i}.bam > merged${i}.bed
-        ${sicer_path} . merged${i}.bed control.bed ${out_dir}${name}/${peak_caller}_fdr${fdr} hg38 1 200 150 0.75 400 ${fdr}
+        SICER.sh . merged${i}.bed control.bed ${out_dir}${name}/${peak_caller}_fdr${fdr} hg38 1 200 150 0.75 400 ${fdr}
         rm -rf ${out_dir}${name}/${peak_caller}_fdr${fdr}/*.bed
         rm -rf merged${i}.bed
         rm -rf chr.list

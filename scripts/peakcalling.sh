@@ -47,8 +47,8 @@ case ${peak_caller} in
     ;;
 esac
 
-chip_lines=$(wc -l ${chip} | cut -d' ' -f 1)
-control_lines=$(wc -l ${control} | cut -d' ' -f 1)
+chip_lines=$(sambamba view -t 4 -c  ${chip})
+control_lines=$(sambamba view -t 4 -c  ${control})
 
 for i in {0..9}
   do

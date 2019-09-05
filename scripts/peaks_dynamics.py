@@ -130,8 +130,6 @@ def cover(peaks1, peaks2):
                 # peaks2 : |........
                 if peaks1[idx1, 1] <= peak[2]:
                     idx1 = move_peak_coord(idx1, peak[0], peak[2], 1, lambda x, y: x <= y)
-                    if idx1 == -1:
-                        break
 
             else:
                 # peaks1 : ...|
@@ -146,6 +144,10 @@ def cover(peaks1, peaks2):
                         move_peak_coord(idx1, peak[0], peak[2], 1, lambda x, y: x <= y)
                 else:
                     move_peak_coord(idx1, peak[0], peak[2], 1, lambda x, y: x <= y)
+
+        if idx1 == -1:
+            break
+
     return res
 
 
